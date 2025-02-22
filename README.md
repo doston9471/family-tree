@@ -1,24 +1,41 @@
-# README
+# Ancestors and Descendants Tree
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple Rails application that allows you to create and manage a family tree.
 
-Things you may want to cover:
+## Features
 
-* Ruby version
+- Create and manage a family tree
+- Display the ancestors and descendants of a person
 
-* System dependencies
+## Technologies
 
-* Configuration
+- Ruby on Rails
+- Tailwind CSS
 
-* Database creation
+## Setup
 
-* Database initialization
+1. Clone the repository
+2. Run `bundle install`
+3. Run `rails db:migrate`
+4. Run `bin/dev`
 
-* How to run the test suite
+## Usage
 
-* Services (job queues, cache servers, search engines, etc.)
+1. Go to `http://localhost:3000`
+2. Click on `New person` to create a new person
+3. Click on `Show` to view the ancestors and descendants of a person
 
-* Deployment instructions
+## Linting
 
-* ...
+```bash
+bin/rubocop -A
+```
+
+## Links
+
+- [Ruby on Rails](https://rubyonrails.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
