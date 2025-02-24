@@ -81,4 +81,72 @@ class Person < ApplicationRecord
     end
     output
   end
+
+  def ancestors_data(depth = 0)
+    data = {
+      id: id,
+      name: "#{first_name} #{last_name}",
+      gender: gender,
+      depth: depth
+    }
+
+    if father
+      data[:father] = father.ancestors_data(depth + 1)
+    end
+
+    if mother
+      data[:mother] = mother.ancestors_data(depth + 1)
+    end
+
+    data
+  end
+
+  def descendants_data(depth = 0)
+    data = {
+      id: id,
+      name: "#{first_name} #{last_name}",
+      gender: gender,
+      depth: depth,
+      spouses: []
+    }
+
+    case gender
+    when "male"
+      wives = Person.where(id: children_as_father.pluck(:mother_id).uniq)
+      wives.each do |wife|
+        spouse_data = {
+          id: wife.id,
+          name: "#{wife.first_name} #{wife.last_name}",
+          gender: wife.gender,
+          children: []
+        }
+
+        children_with_wife = children_as_father.where(mother_id: wife.id)
+        children_with_wife.each do |child|
+          spouse_data[:children] << child.descendants_data(depth + 1)
+        end
+
+        data[:spouses] << spouse_data
+      end
+    when "female"
+      husbands = Person.where(id: children_as_mother.pluck(:father_id).uniq)
+      husbands.each do |husband|
+        spouse_data = {
+          id: husband.id,
+          name: "#{husband.first_name} #{husband.last_name}",
+          gender: husband.gender,
+          children: []
+        }
+
+        children_with_husband = children_as_mother.where(father_id: husband.id)
+        children_with_husband.each do |child|
+          spouse_data[:children] << child.descendants_data(depth + 1)
+        end
+
+        data[:spouses] << spouse_data
+      end
+    end
+
+    data
+  end
 end

@@ -59,6 +59,18 @@ class PeopleController < ApplicationController
     end
   end
 
+  # GET /api/people
+  def api_index
+    @people = Person.all
+    render 'api_index', formats: :json
+  end
+
+  # GET /api/people/:id
+  def api_show
+    @person = Person.find(params[:id])
+    render 'api_show', formats: :json
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_person
