@@ -1,5 +1,5 @@
 # Omakase Ruby styling for Rails
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
 
@@ -21,7 +21,4 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
-
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]`
+    - 'app/views/**/*.jbuilder'

@@ -66,4 +66,5 @@ end
 group :test do
   gem "shoulda-matchers"
   gem "simplecov", require: false
+  gem "simplecov-json", require: false
 end
