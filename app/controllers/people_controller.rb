@@ -62,13 +62,13 @@ class PeopleController < ApplicationController
   # GET /api/people
   def api_index
     @people = Person.all
-    render 'api_index', formats: :json
+    render "api_index", formats: :json
   end
 
   # GET /api/people/:id
   def api_show
     @person = Person.find(params[:id])
-    render 'api_show', formats: :json
+    render "api_show", formats: :json
   end
 
   private

@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "people#index"
 
-  scope '/api' do
-    get 'people', to: 'people#api_index'
-    get 'people/:id', to: 'people#api_show'
+  scope "/api" do
+    get "people", to: "people#api_index"
+    get "people/:id", to: "people#api_show"
   end
 end
