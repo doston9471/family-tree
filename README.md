@@ -31,6 +31,18 @@ This is a simple Rails application that allows you to create and manage a family
 bin/rubocop -A
 ```
 
+## Testing
+
+```bash
+bundle exec rspec
+```
+
+## Coverage
+
+```bash
+bundle exec rspec --format json --out coverage/coverage.json
+```
+
 ## Links
 
 - [Ruby on Rails](https://rubyonrails.org/)
