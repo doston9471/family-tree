@@ -2,15 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Person, type: :model do
   describe 'associations' do
-    it { should belong_to(:father).class_name('Person').optional }
-    it { should belong_to(:mother).class_name('Person').optional }
-    it { should have_many(:children_as_father).class_name('Person') }
-    it { should have_many(:children_as_mother).class_name('Person') }
+    it { is_expected.to belong_to(:father).class_name('Person').optional }
+    it { is_expected.to belong_to(:mother).class_name('Person').optional }
+    it { is_expected.to have_many(:children_as_father).class_name('Person') }
+    it { is_expected.to have_many(:children_as_mother).class_name('Person') }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:first_name) }
-    it { should validate_presence_of(:last_name) }
+    it { is_expected.to validate_presence_of(:first_name) }
+    it { is_expected.to validate_presence_of(:last_name) }
+
     it "validates gender inclusion" do
       person = build(:person, gender: 'invalid')
       expect(person).not_to be_valid
