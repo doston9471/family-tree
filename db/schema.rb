@@ -10,17 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_21_233241) do
+ActiveRecord::Schema[8.1].define(version: 2025_02_21_233241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "people", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.string "gender"
-    t.integer "father_id"
-    t.integer "mother_id"
     t.datetime "created_at", null: false
+    t.integer "father_id"
+    t.string "first_name"
+    t.string "gender"
+    t.string "last_name"
+    t.integer "mother_id"
     t.datetime "updated_at", null: false
     t.index ["father_id"], name: "index_people_on_father_id"
     t.index ["mother_id"], name: "index_people_on_mother_id"
