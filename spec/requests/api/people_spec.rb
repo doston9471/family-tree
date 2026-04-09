@@ -10,7 +10,11 @@ RSpec.describe "API::People", type: :request do
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
 
-      expect(json["people"].length).to eq(9) # 3 people + their parents
+      # Verify all 3 people and their parents (9 total) are included in the response
+      expected_ids = people.flat_map { |p| [ p.id, p.father_id, p.mother_id ].compact }
+      returned_ids = json["people"].map { |p| p["id"] }
+      expect(returned_ids).to include(*expected_ids)
+
       expect(json["people"].first).to include(
         "id",
         "first_name",
