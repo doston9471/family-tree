@@ -70,4 +70,4 @@ group :test do
   gem "simplecov-json", require: false
 end
 
-gem "image_processing", "~> 1.14"
+gem "image_processing", "~> 2.0"
