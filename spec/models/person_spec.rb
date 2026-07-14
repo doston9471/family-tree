@@ -66,24 +66,24 @@ RSpec.describe Person, type: :model do
 
   describe "#display_name" do
     it "includes both parents when present" do
-      person = create(:person, :with_parents, first_name: "Nora", last_name: "Vale")
+      person = create(:person, :with_parents, first_name: "Nora", last_name: "Display")
 
       expect(person.display_name).to eq(
-        "Nora Vale (child of #{person.father.first_name} and #{person.mother.first_name})"
+        "Nora Display (child of #{person.father.first_name} and #{person.mother.first_name})"
       )
     end
 
     it "returns only the full name without parents" do
-      person = create(:person, first_name: "Edmund", last_name: "Willow")
+      person = create(:person, first_name: "Edmund", last_name: "Display")
 
-      expect(person.display_name).to eq("Edmund Willow")
+      expect(person.display_name).to eq("Edmund Display")
     end
 
     it "returns only the full name when a single parent is present" do
-      mother = create(:person, :female, first_name: "Julia")
-      person = create(:person, first_name: "Clara", last_name: "Moss", mother: mother)
+      mother = create(:person, :female, first_name: "Julia", last_name: "Display")
+      person = create(:person, first_name: "Clara", last_name: "Display", mother: mother)
 
-      expect(person.display_name).to eq("Clara Moss")
+      expect(person.display_name).to eq("Clara Display")
     end
   end
 
@@ -195,10 +195,10 @@ RSpec.describe Person, type: :model do
 
   describe "#ancestors_tree" do
     it "includes the person and labeled parents" do
-      person = create(:person, :with_parents, first_name: "Nora", last_name: "Vale")
+      person = create(:person, :with_parents, first_name: "Nora", last_name: "Tree")
       tree = person.ancestors_tree
 
-      expect(tree).to include("Nora Vale")
+      expect(tree).to include("Nora Tree")
       expect(tree).to include("Father:")
       expect(tree).to include("Mother:")
       expect(tree).to include(person.father.first_name)
@@ -208,9 +208,9 @@ RSpec.describe Person, type: :model do
 
   describe "#descendants_tree" do
     it "includes spouse and child labels for a male person" do
-      father = create(:person, :male, first_name: "Victor")
-      mother = create(:person, :female, first_name: "Elena")
-      create(:person, father: father, mother: mother, first_name: "Daniel")
+      father = create(:person, :male, first_name: "Victor", last_name: "Tree")
+      mother = create(:person, :female, first_name: "Elena", last_name: "Tree")
+      create(:person, father: father, mother: mother, first_name: "Daniel", last_name: "Tree")
 
       tree = father.descendants_tree
 
@@ -221,9 +221,9 @@ RSpec.describe Person, type: :model do
     end
 
     it "includes spouse and child labels for a female person" do
-      mother = create(:person, :female, first_name: "Elena")
-      father = create(:person, :male, first_name: "Victor")
-      create(:person, father: father, mother: mother, first_name: "Daniel")
+      mother = create(:person, :female, first_name: "Elena", last_name: "TreeFemale")
+      father = create(:person, :male, first_name: "Victor", last_name: "TreeFemale")
+      create(:person, father: father, mother: mother, first_name: "Daniel", last_name: "TreeFemale")
 
       tree = mother.descendants_tree
 

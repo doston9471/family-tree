@@ -3,17 +3,20 @@ require "rails_helper"
 RSpec.describe "People", type: :request do
   describe "GET /people" do
     it "lists people and the branded home content" do
-      person = create(:person, first_name: "Nora", last_name: "Vale")
+      person = create(:person, first_name: "Nora", last_name: "Index")
 
       get people_path
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Ancestry Tree")
-      expect(response.body).to include("Nora Vale")
+      expect(response.body).to include("Nora Index")
       expect(response.body).to include(person_path(person))
     end
 
     it "shows an empty state when there are no people" do
+      Person.update_all(father_id: nil, mother_id: nil)
+      Person.delete_all
+
       get people_path
 
       expect(response).to have_http_status(:ok)
@@ -23,19 +26,19 @@ RSpec.describe "People", type: :request do
 
   describe "GET /people/:id" do
     it "renders ancestor and descendant sections" do
-      person = create(:person, :male, :with_parents, first_name: "Oliver", last_name: "Willow")
-      spouse = create(:person, :female, first_name: "Priya", last_name: "Vale")
-      create(:person, father: person, mother: spouse, first_name: "Nora", last_name: "Vale")
+      person = create(:person, :male, :with_parents, first_name: "Oliver", last_name: "Show")
+      spouse = create(:person, :female, first_name: "Priya", last_name: "Show")
+      create(:person, father: person, mother: spouse, first_name: "Nora", last_name: "Show")
 
       get person_path(person)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Oliver Willow")
+      expect(response.body).to include("Oliver Show")
       expect(response.body).to include("Ancestors")
       expect(response.body).to include("Descendants")
       expect(response.body).to include(person.father.first_name)
-      expect(response.body).to include("Priya Vale")
-      expect(response.body).to include("Nora Vale")
+      expect(response.body).to include("Priya Show")
+      expect(response.body).to include("Nora Show")
     end
   end
 
@@ -57,7 +60,7 @@ RSpec.describe "People", type: :request do
         post people_path, params: {
           person: {
             first_name: "Saga",
-            last_name: "Berg",
+            last_name: "Create",
             gender: "female",
             father_id: father.id,
             mother_id: mother.id
@@ -69,7 +72,7 @@ RSpec.describe "People", type: :request do
       expect(response).to redirect_to(person)
       expect(flash[:notice]).to eq("Person was successfully created.")
       follow_redirect!
-      expect(response.body).to include("Saga Berg")
+      expect(response.body).to include("Saga Create")
     end
 
     it "re-renders the form when invalid" do
@@ -77,7 +80,7 @@ RSpec.describe "People", type: :request do
         post people_path, params: {
           person: {
             first_name: "",
-            last_name: "Berg",
+            last_name: "Create",
             gender: "female"
           }
         }
@@ -90,21 +93,21 @@ RSpec.describe "People", type: :request do
 
   describe "GET /people/:id/edit" do
     it "renders the edit form" do
-      person = create(:person, first_name: "Erik", last_name: "Berg")
+      person = create(:person, first_name: "Erik", last_name: "Edit")
 
       get edit_person_path(person)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Erik Berg")
+      expect(response.body).to include("Erik Edit")
     end
   end
 
   describe "PATCH /people/:id" do
-    let!(:person) { create(:person, first_name: "Erik", last_name: "Berg") }
+    let!(:person) { create(:person, first_name: "Erik", last_name: "Update") }
 
     it "updates the person and redirects" do
       patch person_path(person), params: {
-        person: { first_name: "Bjorn", last_name: "Berg", gender: person.gender }
+        person: { first_name: "Bjorn", last_name: "Update", gender: person.gender }
       }
 
       expect(response).to redirect_to(person)
@@ -114,7 +117,7 @@ RSpec.describe "People", type: :request do
 
     it "re-renders the form when invalid" do
       patch person_path(person), params: {
-        person: { first_name: "", last_name: "Berg", gender: person.gender }
+        person: { first_name: "", last_name: "Update", gender: person.gender }
       }
 
       expect(response).to have_http_status(:unprocessable_content)
