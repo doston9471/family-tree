@@ -1,9 +1,8 @@
 <%= form_with(model: person, class: "contents") do |form| %>
   <% if person.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(person.errors.count, "error") %> prohibited this person from being saved:</h2>
-
-      <ul class="list-disc ml-6">
+    <div id="error_explanation" class="mb-6 rounded-md border border-danger/25 bg-danger-soft px-4 py-3 text-sm text-danger">
+      <h2 class="font-medium"><%= pluralize(person.errors.count, "error") %> prohibited this person from being saved:</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
         <% person.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,47 +10,45 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": person.errors[:first_name].none?, "border-red-400 focus:outline-red-600": person.errors[:first_name].any?}] %>
+  <div class="mb-5">
+    <%= form.label :first_name, class: "field-label" %>
+    <%= form.text_field :first_name, class: ["field-input", { "field-input-error": person.errors[:first_name].any? }] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": person.errors[:last_name].none?, "border-red-400 focus:outline-red-600": person.errors[:last_name].any?}] %>
+  <div class="mb-5">
+    <%= form.label :last_name, class: "field-label" %>
+    <%= form.text_field :last_name, class: ["field-input", { "field-input-error": person.errors[:last_name].any? }] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :gender %>
-    <%= form.select :gender, [["Male", "male"], ["Female", "female"]], prompt: "Select Gender" %>
-    <%#= form.text_field :gender, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": person.errors[:gender].none?, "border-red-400 focus:outline-red-600": person.errors[:gender].any?}] %>
+  <div class="mb-5">
+    <%= form.label :gender, class: "field-label" %>
+    <%= form.select :gender,
+                   [["Male", "male"], ["Female", "female"]],
+                   { prompt: "Select gender" },
+                   class: ["field-input", { "field-input-error": person.errors[:gender].any? }] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :father_id %>
+  <div class="mb-5">
+    <%= form.label :father_id, "Father", class: "field-label" %>
     <%= form.collection_select :father_id,
                              Person.where(gender: "male"),
                              :id,
                              :display_name,
-                             { include_blank: true },
-                             { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full",
-                                     {"border-gray-400 focus:outline-blue-600": person.errors[:father_id].none?,
-                                      "border-red-400 focus:outline-red-600": person.errors[:father_id].any?}] } %>
+                             { include_blank: "Not specified" },
+                             { class: ["field-input", { "field-input-error": person.errors[:father_id].any? }] } %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :mother_id %>
+  <div class="mb-8">
+    <%= form.label :mother_id, "Mother", class: "field-label" %>
     <%= form.collection_select :mother_id,
                              Person.where(gender: "female"),
                              :id,
                              :display_name,
-                             { include_blank: true },
-                             { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full",
-                                     {"border-gray-400 focus:outline-blue-600": person.errors[:mother_id].none?,
-                                      "border-red-400 focus:outline-red-600": person.errors[:mother_id].any?}] } %>
+                             { include_blank: "Not specified" },
+                             { class: ["field-input", { "field-input-error": person.errors[:mother_id].any? }] } %>
   </div>
 
-  <div class="inline">
-    <%= form.submit class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <div>
+    <%= form.submit class: "btn-primary cursor-pointer" %>
   </div>
 <% end %>

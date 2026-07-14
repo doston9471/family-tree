@@ -1,0 +1,40 @@
+<%# locals: node:, focus: false %>
+<% focus = local_assigns.fetch(:focus, false) %>
+<% has_parents = node[:father].present? || node[:mother].present? %>
+
+<figure class="lineage-branch">
+  <% if has_parents %>
+    <ul class="lineage-merge">
+      <li class="lineage-merge-item">
+        <% if node[:father].present? %>
+          <%= render "ancestor_branch", node: node[:father], focus: false %>
+        <% else %>
+          <div class="lineage-chip border-dashed border-ink/15 bg-transparent opacity-50">
+            <span class="lineage-chip-name text-ink-muted">Unknown</span>
+            <span class="lineage-chip-meta">Father</span>
+          </div>
+        <% end %>
+      </li>
+      <li class="lineage-merge-item">
+        <% if node[:mother].present? %>
+          <%= render "ancestor_branch", node: node[:mother], focus: false %>
+        <% else %>
+          <div class="lineage-chip border-dashed border-ink/15 bg-transparent opacity-50">
+            <span class="lineage-chip-name text-ink-muted">Unknown</span>
+            <span class="lineage-chip-meta">Mother</span>
+          </div>
+        <% end %>
+      </li>
+    </ul>
+  <% end %>
+
+  <div class="lineage-person">
+    <%= render "lineage_chip",
+               id: node[:id],
+               name: node[:name],
+               gender: node[:gender],
+               role: focus ? "focus" : nil,
+               variant: "ancestor",
+               depth: focus ? nil : node[:depth] %>
+  </div>
+</figure>

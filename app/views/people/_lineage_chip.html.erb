@@ -1,0 +1,27 @@
+<%# locals: id:, name:, gender:, variant: "ancestor", role: nil, depth: nil %>
+<% variant = local_assigns.fetch(:variant, "ancestor") %>
+<% role = local_assigns[:role] %>
+<% depth = local_assigns[:depth] %>
+
+<% chip_class = case variant
+                when "focus", "ancestor"
+                  role == "focus" ? "chip-focus" : "chip-ancestor"
+                when "spouse"
+                  "chip-spouse"
+                else
+                  role == "focus" ? "chip-focus" : "chip-descendant"
+                end %>
+
+<%= link_to person_path(id), class: "lineage-chip #{chip_class}" do %>
+  <span class="lineage-chip-name"><%= sanitize name %></span>
+  <span class="lineage-chip-meta">
+    <%= gender %>
+    <% if role.present? && role != "focus" %>
+      · <%= role %>
+    <% elsif depth.to_i.positive? %>
+      · gen <%= depth %>
+    <% elsif role == "focus" %>
+      · you are here
+    <% end %>
+  </span>
+<% end %>

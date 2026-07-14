@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Ancestry Tree" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,13 +17,26 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400..700;1,400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap" rel="stylesheet">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <header class="site-nav">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+        <%= link_to root_path, class: "group flex items-baseline gap-2" do %>
+          <span class="font-display text-xl font-semibold tracking-tight text-ink group-hover:text-olive transition-colors">Ancestry Tree</span>
+        <% end %>
+
+        <%= link_to "New person", new_person_path, class: "btn-primary" %>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl px-5 py-10 md:py-14">
       <%= yield %>
     </main>
   </body>

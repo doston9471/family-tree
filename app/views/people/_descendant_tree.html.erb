@@ -1,0 +1,55 @@
+<%# locals: node:, root: false %>
+<% root = local_assigns.fetch(:root, false) %>
+
+<% families = if root
+                node[:spouses].map { |spouse| { person: node, spouse: spouse, focus: true } }
+              else
+                node[:spouses].map { |spouse| { person: node, spouse: spouse, focus: false } }
+              end %>
+
+<% families.each do |family| %>
+  <% person = family[:person] %>
+  <% spouse = family[:spouse] %>
+  <% focus = family[:focus] %>
+
+  <figure class="lineage-branch">
+    <div class="lineage-person">
+      <div class="lineage-couple">
+        <%= render "lineage_chip",
+                   id: person[:id],
+                   name: person[:name],
+                   gender: person[:gender],
+                   role: focus ? "focus" : nil,
+                   variant: "descendant",
+                   depth: focus ? nil : person[:depth] %>
+        <%= render "lineage_chip",
+                   id: spouse[:id],
+                   name: spouse[:name],
+                   gender: spouse[:gender],
+                   role: person[:gender] == "male" ? "Wife" : "Husband",
+                   variant: "spouse" %>
+      </div>
+    </div>
+
+    <% if spouse[:children].present? %>
+      <ul class="lineage-split">
+        <% spouse[:children].each do |child| %>
+          <li class="lineage-split-item">
+            <% if child[:spouses].present? %>
+              <%= render "descendant_tree", node: child, root: false %>
+            <% else %>
+              <%= render "lineage_chip",
+                         id: child[:id],
+                         name: child[:name],
+                         gender: child[:gender],
+                         variant: "descendant",
+                         depth: child[:depth] %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% elsif root %>
+      <p class="empty-lineage !py-4">No children with this spouse.</p>
+    <% end %>
+  </figure>
+<% end %>

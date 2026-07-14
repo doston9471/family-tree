@@ -1,64 +1,88 @@
-<% content_for :title, "People" %>
+<% content_for :title, "Ancestry Tree" %>
 
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<% if notice.present? %>
+  <p class="notice" id="notice"><%= notice %></p>
+<% end %>
 
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="font-bold text-4xl">People</h1>
-    <%= link_to "New person", new_person_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+<section class="relative -mx-5 mb-16 overflow-hidden px-5 pb-4 pt-6 md:mb-20 md:pt-10">
+  <div class="relative z-10 max-w-2xl">
+    <p class="animate-rise font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl md:text-7xl">
+      Ancestry Tree
+    </p>
+    <h1 class="animate-rise-delay-1 mt-5 font-display text-2xl font-medium leading-snug text-ink-muted sm:text-3xl">
+      Map the people who came before — and those who follow.
+    </h1>
+    <p class="animate-rise-delay-2 mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-lg">
+      Build a living record of your family: add relatives, connect parents, and explore ancestors and descendants in one place.
+    </p>
+    <div class="animate-rise-delay-3 mt-8 flex flex-wrap items-center gap-3">
+      <%= link_to "Add a person", new_person_path, class: "btn-primary" %>
+      <a href="#people" class="btn-secondary">Browse people</a>
+    </div>
+  </div>
+</section>
+
+<section id="people" class="scroll-mt-24">
+  <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h2 class="font-display text-3xl font-semibold tracking-tight text-ink">People</h2>
+      <p class="mt-1 text-sm text-ink-muted">
+        <%= pluralize(@people.size, "person") %> in your tree
+      </p>
+    </div>
+    <%= link_to "New person", new_person_path, class: "btn-secondary" %>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% if @people.any? %>
-      <% @people.each do |person| %>
-        <div class="bg-white rounded-lg shadow-md overflow-hidden min-h-[280px] flex flex-col">
-          <div class="p-6 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-semibold text-gray-800">
-                <%= sanitize person.display_name %>
-              </h2>
-              <span class="px-3 py-1 text-sm rounded-full shrink-0 ml-2 <%= person.gender == 'male' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' %>">
-                <%= person.gender.capitalize %>
-              </span>
-            </div>
-            
-            <div class="space-y-2 mb-4 flex-1">
-              <div class="text-gray-600">
-                <span class="font-medium">Father:</span>
-                <% if person.father %>
-                  <span><%= sanitize person.father.display_name %></span>
-                <% else %>
-                  <span class="text-gray-400 italic">Not specified</span>
-                <% end %>
-              </div>
-              
-              <div class="text-gray-600">
-                <span class="font-medium">Mother:</span>
-                <% if person.mother %>
-                  <span><%= sanitize person.mother.display_name %></span>
-                <% else %>
-                  <span class="text-gray-400 italic">Not specified</span>
-                <% end %>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-end space-x-2 pt-4 border-t border-gray-200">
-              <%= link_to "Show", person, class: "px-3 py-2 text-sm rounded-md bg-green-600 hover:bg-green-700 text-white font-medium" %>
-              <%= link_to "Edit", edit_person_path(person), class: "px-3 py-2 text-sm rounded-md bg-orange-600 hover:bg-orange-700 text-white font-medium" %>
-              <%= button_to "Delete", person,
-                  method: :delete, 
-                  class: "px-3 py-2 text-sm rounded-md bg-red-600 hover:bg-red-700 text-white font-medium",
-                  data: { turbo_confirm: "Are you sure?" } %>
-            </div>
+  <% if @people.any? %>
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <% @people.each_with_index do |person, index| %>
+        <article class="person-card stagger-item" style="animation-delay: <%= [index * 0.05, 0.4].min %>s">
+          <div class="mb-4 flex items-start justify-between gap-3">
+            <h3 class="font-display text-xl font-semibold leading-snug text-ink">
+              <%= link_to sanitize(person.display_name), person, class: "hover:text-olive" %>
+            </h3>
+            <span class="shrink-0 text-xs font-medium uppercase tracking-wide text-ink-muted">
+              <%= person.gender %>
+            </span>
           </div>
-        </div>
+
+          <div class="mb-5 flex-1 space-y-2 text-sm text-ink-muted">
+            <p>
+              <span class="font-medium text-ink/70">Father</span>
+              <% if person.father %>
+                <span class="ml-1"><%= sanitize person.father.display_name %></span>
+              <% else %>
+                <span class="ml-1 italic opacity-60">Not specified</span>
+              <% end %>
+            </p>
+            <p>
+              <span class="font-medium text-ink/70">Mother</span>
+              <% if person.mother %>
+                <span class="ml-1"><%= sanitize person.mother.display_name %></span>
+              <% else %>
+                <span class="ml-1 italic opacity-60">Not specified</span>
+              <% end %>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-1 border-t border-ink/10 pt-4">
+            <%= link_to "Show", person, class: "btn-primary !px-3 !py-1.5 !text-xs" %>
+            <%= link_to "Edit", edit_person_path(person), class: "btn-ghost" %>
+            <%= button_to "Delete", person,
+                method: :delete,
+                class: "btn-danger-ghost cursor-pointer",
+                data: { turbo_confirm: "Are you sure?" } %>
+          </div>
+        </article>
       <% end %>
-    <% else %>
-      <div class="col-span-full">
-        <p class="text-center text-gray-500 my-10">No people found.</p>
-      </div>
-    <% end %>
-  </div>
-</div>
+    </div>
+  <% else %>
+    <div class="rounded-lg border border-dashed border-ink/20 bg-paper/60 px-6 py-16 text-center">
+      <p class="font-display text-2xl font-medium text-ink">Your tree is empty</p>
+      <p class="mx-auto mt-2 max-w-md text-ink-muted">
+        Add the first person to begin tracing lineage across generations.
+      </p>
+      <%= link_to "Add a person", new_person_path, class: "btn-primary mt-6" %>
+    </div>
+  <% end %>
+</section>

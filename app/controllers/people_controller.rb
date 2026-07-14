@@ -8,8 +8,8 @@ class PeopleController < ApplicationController
 
   # GET /people/1 or /people/1.json
   def show
-    @ancestors_tree = @person.ancestors_tree
-    @descendants_tree = @person.descendants_tree
+    @ancestors_data = @person.ancestors_data
+    @descendants_data = @person.descendants_data
   end
 
   # GET /people/new

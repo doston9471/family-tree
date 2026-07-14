@@ -1,66 +1,78 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "API::People", type: :request do
   describe "GET /api/people" do
-    let!(:people) { create_list(:person, 3, :with_parents) }
+    let!(:people) { create_list(:person, 2, :with_parents) }
 
-    it "returns all people with their basic information" do
+    it "returns every person with basic identity and parent links" do
       get "/api/people"
 
-      expect(response).to have_http_status(:success)
-      json = JSON.parse(response.body)
+      expect(response).to have_http_status(:ok)
 
-      # Verify all 3 people and their parents (9 total) are included in the response
-      expected_ids = people.flat_map { |p| [ p.id, p.father_id, p.mother_id ].compact }
-      returned_ids = json["people"].map { |p| p["id"] }
-      expect(returned_ids).to include(*expected_ids)
+      payload = response.parsed_body.fetch("people")
+      expected_ids = people.flat_map { |person| [ person.id, person.father_id, person.mother_id ] }
 
-      expect(json["people"].first).to include(
+      expect(payload.map { |person| person["id"] }).to include(*expected_ids)
+      expect(payload.first).to include(
         "id",
         "first_name",
         "last_name",
         "gender",
+        "display_name",
         "father",
         "mother"
       )
     end
+
+    it "returns an empty collection when no people exist" do
+      Person.update_all(father_id: nil, mother_id: nil)
+      Person.delete_all
+
+      get "/api/people"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.fetch("people")).to eq([])
+    end
   end
 
   describe "GET /api/people/:id" do
-    let!(:person) { create(:person, :with_parents) }
-    let!(:spouse) { create(:person, gender: person.gender == 'male' ? 'female' : 'male') }
-    let!(:child) { create(:person, father: person.gender == 'male' ? person : spouse,
-                                  mother: person.gender == 'female' ? person : spouse) }
+    let!(:person) { create(:person, :male, :with_parents) }
+    let!(:spouse) { create(:person, :female) }
+    let!(:child) { create(:person, father: person, mother: spouse) }
 
-    it "returns detailed person information with family trees" do
+    it "returns the person with nested ancestor and descendant trees" do
       get "/api/people/#{person.id}"
 
-      expect(response).to have_http_status(:success)
-      json = JSON.parse(response.body)
+      expect(response).to have_http_status(:ok)
 
-      expect(json["person"]).to include(
-        "id",
-        "first_name",
-        "last_name",
-        "gender",
-        "ancestors_data",
-        "descendants_data"
+      payload = response.parsed_body.fetch("person")
+      expect(payload).to include(
+        "id" => person.id,
+        "first_name" => person.first_name,
+        "last_name" => person.last_name,
+        "gender" => "male"
       )
+      expect(payload["father"]).to include("id" => person.father_id)
+      expect(payload["mother"]).to include("id" => person.mother_id)
 
-      expect(json["person"]["ancestors_data"]).to include(
-        "id",
-        "name",
-        "gender",
-        "depth"
+      expect(payload["ancestors_data"]).to include(
+        "id" => person.id,
+        "depth" => 0
       )
+      expect(payload.dig("ancestors_data", "father", "id")).to eq(person.father_id)
 
-      expect(json["person"]["descendants_data"]).to include(
-        "id",
-        "name",
-        "gender",
-        "depth",
-        "spouses"
+      expect(payload["descendants_data"]).to include(
+        "id" => person.id,
+        "depth" => 0
       )
+      expect(payload.dig("descendants_data", "spouses", 0, "id")).to eq(spouse.id)
+      expect(payload.dig("descendants_data", "spouses", 0, "children", 0, "id")).to eq(child.id)
+    end
+
+    it "returns not found for an unknown id" do
+      get "/api/people/0"
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 end
