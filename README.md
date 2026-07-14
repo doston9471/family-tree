@@ -11,13 +11,52 @@ This is a simple Rails application that allows you to create and manage a family
 
 - Ruby on Rails
 - Tailwind CSS
+- PostgreSQL
 
-## Setup
+## Setup (local)
 
 1. Clone the repository
 2. Run `bundle install`
 3. Run `rails db:migrate`
-4. Run `bin/dev`
+4. Run `bin/rails db:seed` (optional sample data)
+5. Run `bin/dev`
+
+## Setup (Docker)
+
+Requires [Docker](https://docs.docker.com/get-docker/) and Docker Compose.
+
+```bash
+docker compose up --build
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+On first boot the app prepares the database and loads seeds when the people table is empty.
+
+Useful commands:
+
+```bash
+# Rebuild and start in the background
+docker compose up --build -d
+
+# Force re-seed (clears people and reloads db/seeds.rb)
+SEED=1 docker compose up
+
+# Rails console
+docker compose exec web bin/rails console
+
+# Run the test suite
+docker compose exec web bundle exec rspec
+
+# Stop
+docker compose down
+```
+
+Production-style image (Kamal / thruster) still builds from `Dockerfile`:
+
+```bash
+docker build -t ancestry_tree .
+```
 
 ## Usage
 
