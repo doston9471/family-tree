@@ -71,3 +71,5 @@ group :test do
 end
 
 gem "image_processing", "~> 2.0"
+gem "ruby-vips", "~> 2.0"
+
