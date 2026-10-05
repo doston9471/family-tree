@@ -70,5 +70,5 @@ group :test do
   gem "simplecov-json", require: false
 end
 
-gem "image_processing", "~> 2.1"
+gem "image_processing", "~> 2.2"
 gem "ruby-vips", "~> 2.0", require: false
